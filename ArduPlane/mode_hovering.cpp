@@ -16,6 +16,8 @@ void ModeManualK::update()
 #include <AP_Baro/AP_Baro.h>
 #include <AP_HAL/AP_HAL.h>
 
+#include <AP_WindVane/AP_WindVane.h>
+
 #include <AP_SerialManager/AP_SerialManager.h>
 #include <AP_NavEKF3/AP_NavEKF3.h>
 #include <RC_Channel/RC_Channel.h>
@@ -80,20 +82,7 @@ void ModeHovering::update()
     gps().update();
 
     AP::ahrs().update();
-    
-    // Obter matriz de atitude (matriz de rotação corpo-terra)
-    //Matrix3f attitude_matrix = AP::ahrs().get_rotation_body_to_ned().transposed();
-    
-    
-    //quadplane.update();
-    /*Vector3f curr_pos_rel_ekf = zef_inertial_nav.get_position_neu_cm();
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, " x: %.2fm \n"
-                                     " y: %.2fm \n"
-                                     " z: %.2fm \n",
-                                    (double)curr_pos_rel_ekf[0],
-                                    (double)curr_pos_rel_ekf[1],
-                                    (double)curr_pos_rel_ekf[2]);*/
-    
+     
     
     float pitch = AP::ahrs().get_pitch(); // Get pitch angle in degrees
     float yaw = AP::ahrs().get_yaw(); // Get yaw angle in degrees
@@ -103,6 +92,7 @@ void ModeHovering::update()
     // Here we rely on the time of the message in GPS class and the time of last message
     // saved in static variable last_msg_ms. When new message is received, the time
     // in GPS class will be updated.
+    
     Location loc;
     if (last_msg_ms != gps().last_message_time_ms()) {
         // Reset the time of message
@@ -134,7 +124,7 @@ void ModeHovering::update()
     Vector3f inertial_vector((float) ret_errors[0], (float) ret_errors[1], (float) ret_errors[2]);
     Vector3f body_vector = zefiroControl.rotate_inertial_to_body(roll, pitch, yaw, inertial_vector);
     
-    /*GCS_SEND_TEXT(MAV_SEVERITY_INFO,    " x: %.4fm \n"
+    /*GCS_SEND_TEXT(MAV_SEVERITY_INFO,    " x: %.4fm \n" #teste
                                         " y: %.4fm \n"
                                         " z: %.4fm \n",
                                         (double)body_vector.x,
@@ -224,6 +214,10 @@ void ModeHovering::update()
     //zefiroControl.update(double U_longit_speed, double V_lateral_speed, double W_vertical_speed,
     //    double P_v_roll, double Q_v_pitch, double R_v_yaw, double Roll, double Pitch, double Yaw);
     //double wind_direction = wrap_PI(plane.g2.windvane.get_apparent_wind_speeddirection_rad()); // radians(wrap_360(degrees(plane.g2.windvane.get_apparent_wind_direction_rad())));
+        if (AP::windvane() == nullptr) {
+        GCS_SEND_TEXT(MAV_SEVERITY_WARNING, "Windvane module not available");
+    }
+    
     double wind_direction = wrap_PI(AP::windvane()->get_apparent_wind_direction_rad());
     double wind_speed = AP::windvane()->get_apparent_wind_speed();
     double vx = wind_speed * cosf(wind_direction);
@@ -270,6 +264,7 @@ void ModeHovering::update()
 
     int16_t min_motor = 1000;
     int16_t max_motor = 2000; //2000;
+    n
     if( AP::arming().is_armed() ) {
         /*int F1 = zefiroControl.get_value_to_pwm_motor(zefiroControl.F1_forca_motor, min_motor, max_motor);
         int F2 = zefiroControl.get_value_to_pwm_motor(zefiroControl.F2_forca_motor, min_motor, max_motor);
@@ -292,10 +287,8 @@ void ModeHovering::update()
         SRV_Channels::move_servo(SRV_Channel::k_motor4, 0, min_motor, max_motor);
     }
 
-
-    //plane.nav_roll_cd = plane.AP::ahrs.roll_sensor;
-    //plane.nav_pitch_cd = plane.AP::ahrs.pitch_sensor;
-
 }
-
+    void is_armed(){
+        
+    }
 
