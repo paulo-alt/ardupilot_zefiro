@@ -54,7 +54,7 @@ public:
     double J1_cmd_roll, J2_cmd_pitch, J3_cmd_throttle, J4_cmd_yaw, RS_cmd_up_down, LS_cmd_letf_right = 0.0;
     double F1_forca_motor, F2_forca_motor, F3_forca_motor, F4_forca_motor = 0.0;
     double comando_M1, comando_M2, comando_M3, comando_M4 = 0.0;
-    double d1_angulo_motor, d2_angulo_motor, d3_angulo_motor, d4_angulo_motor = 0.0;
+    double d1_angel_motor, d2_angel_motor, d3_angel_motor, d4_angel_motor = 0.0;
     double dvu_ang_estab_vert_cima, dvd_ang_estab_vert_baixo, dhr_ang_estab_horiz_direito, dhl_ang_estab_horiz_esquerdo = 0.0;
 
     void mult_mat(const float matrix[8][12], const double vector[12], double (&results)[12]);

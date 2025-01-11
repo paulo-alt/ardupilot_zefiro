@@ -209,15 +209,15 @@ void ZefControl::manual_inputs_update(double aileron, double elevator, double ru
 double ZefControl::set_angle_range(double last_angle, double v1, double v0) {
     double pi = 3.14159265358979311600;
     double Ang_max = 210/180*pi;
-    double d_angulo_motor_ant = last_angle;
-    double d_angulo_motor = atan2f(v1, v0);
-    if (d_angulo_motor>(2*pi-Ang_max) && d_angulo_motor_ant < -(2*pi-Ang_max) ) {
-        d_angulo_motor =  -(2*pi-d_angulo_motor);
+    double d_angel_motor_ant = last_angle;
+    double d_angel_motor = atan2f(v1, v0);
+    if (d_angel_motor>(2*pi-Ang_max) && d_angel_motor_ant < -(2*pi-Ang_max) ) {
+        d_angel_motor =  -(2*pi-d_angel_motor);
     }
-    if (d_angulo_motor<-(2*pi-Ang_max) && d_angulo_motor_ant > (2*pi-Ang_max) ) {
-        d_angulo_motor =  (2*pi-d_angulo_motor);
+    if (d_angel_motor<-(2*pi-Ang_max) && d_angel_motor_ant > (2*pi-Ang_max) ) {
+        d_angel_motor =  (2*pi-d_angel_motor);
     }
-    return d_angulo_motor;
+    return d_angel_motor;
 }
 
 double ZefControl::get_engine_command(double motor_force) {
@@ -238,29 +238,29 @@ void ZefControl::set_power_and_angles(double (&U)[12]) {
     double coef_antec_mov = 0.5;
     double f_min_servo = F_min_mot * coef_antec_mov;
 
-    // Encontra a força dos motores absoluta e o angulo dos motores
+    // Encontra a força dos motores absoluta e o angel dos motores
     F1_forca_motor = sqrtf(powf(U[0], 2) + powf(U[1], 2));
     if( F1_forca_motor >= f_min_servo ) {
-        ang_anterior = d1_angulo_motor;
-        d1_angulo_motor = set_angle_range(ang_anterior, U[1], U[0]);
+        ang_anterior = d1_angel_motor;
+        d1_angel_motor = set_angle_range(ang_anterior, U[1], U[0]);
     }
 
     F2_forca_motor = sqrtf(powf(U[2], 2) + powf(U[3], 2));
     if( F2_forca_motor >= f_min_servo ) {
-        ang_anterior = d2_angulo_motor;
-        d2_angulo_motor = set_angle_range(ang_anterior, U[3], U[2]);
+        ang_anterior = d2_angel_motor;
+        d2_angel_motor = set_angle_range(ang_anterior, U[3], U[2]);
     }
 
     F3_forca_motor = sqrtf(powf(U[4], 2) + powf(U[5], 2));
     if( F3_forca_motor >= f_min_servo ) {
-        ang_anterior = d3_angulo_motor;
-        d3_angulo_motor = set_angle_range(ang_anterior, U[5], U[4]);
+        ang_anterior = d3_angel_motor;
+        d3_angel_motor = set_angle_range(ang_anterior, U[5], U[4]);
     }
 
     F4_forca_motor = sqrtf(powf(U[6], 2) + powf(U[7], 2));
     if( F4_forca_motor >= f_min_servo ) {
-        ang_anterior = d4_angulo_motor;
-        d4_angulo_motor = set_angle_range(ang_anterior, U[7], U[6]);
+        ang_anterior = d4_angel_motor;
+        d4_angel_motor = set_angle_range(ang_anterior, U[7], U[6]);
     }
 
     /*GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F1 - v1 %f - v2 %f - p1 %f - p2 %f - raiz: %f", U[0], U[1], powf(U[0], 2), powf(U[1], 2), F1_forca_motor);
@@ -274,10 +274,10 @@ void ZefControl::set_power_and_angles(double (&U)[12]) {
     dhr_ang_estab_horiz_direito = U[10];
     dhl_ang_estab_horiz_esquerdo = U[11];
 
-    /*GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F1: %f -- ang: %f", F1_forca_motor, d1_angulo_motor);
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F2: %f -- ang: %f", F2_forca_motor, d2_angulo_motor);
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F3: %f -- ang: %f", F3_forca_motor, d3_angulo_motor);
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F4: %f -- ang: %f", F4_forca_motor, d4_angulo_motor);
+    /*GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F1: %f -- ang: %f", F1_forca_motor, d1_angel_motor);
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F2: %f -- ang: %f", F2_forca_motor, d2_angel_motor);
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F3: %f -- ang: %f", F3_forca_motor, d3_angel_motor);
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F4: %f -- ang: %f", F4_forca_motor, d4_angel_motor);
     GCS_SEND_TEXT(MAV_SEVERITY_INFO, "=====");*/
     /*GCS_SEND_TEXT(MAV_SEVERITY_INFO, "ang v cima: %f -- ang v baixo: %f", dvu_ang_estab_vert_cima, dvd_ang_estab_vert_baixo);
     GCS_SEND_TEXT(MAV_SEVERITY_INFO, "ang h dir: %f -- ang h esq: %f", dhr_ang_estab_horiz_direito, dhl_ang_estab_horiz_esquerdo);*/
@@ -297,10 +297,10 @@ void ZefControl::put_forces_in_range() {
 }
 
 void ZefControl::print_output_data() {
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F1: %f -- ang: %f", F1_forca_motor, d1_angulo_motor);
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F2: %f -- ang: %f", F2_forca_motor, d2_angulo_motor);
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F3: %f -- ang: %f", F3_forca_motor, d3_angulo_motor);
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F4: %f -- ang: %f", F4_forca_motor, d4_angulo_motor);
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F1: %f -- ang: %f", F1_forca_motor, d1_angel_motor);
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F2: %f -- ang: %f", F2_forca_motor, d2_angel_motor);
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F3: %f -- ang: %f", F3_forca_motor, d3_angel_motor);
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "F4: %f -- ang: %f", F4_forca_motor, d4_angel_motor);
     GCS_SEND_TEXT(MAV_SEVERITY_INFO, "ang v cima: %f -- ang v baixo: %f", dvu_ang_estab_vert_cima, dvd_ang_estab_vert_baixo);
     GCS_SEND_TEXT(MAV_SEVERITY_INFO, "ang h dir: %f -- ang h esq: %f", dhr_ang_estab_horiz_direito, dhl_ang_estab_horiz_esquerdo);
 }
