@@ -54,7 +54,7 @@ bool ModeManualK::_enter()
     //rc().channel(CH_7)->set_range(1900);
     //barometer.init();
     //barometer.calibrate();
-    
+
     /*for (uint8_t i = 0; i< 14; i++) {
         hal.rcout->enable_ch(i);
     }*/
@@ -91,7 +91,6 @@ void ModeManualK::update()
     get_update_location();
     get_3d_position();
     
-    }
     
     //plane.barometer.accumulate();
     plane.barometer.update();
@@ -270,7 +269,7 @@ void is_armed(){
         SRV_Channels::move_servo(SRV_Channel::k_motor4, 0, min_motor, max_motor);
     }
 }
-void update_error_position(){
+//void update_error_position(){
     
 }
 void get_3d_position(){
